@@ -41,12 +41,21 @@
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
+        <Button
+            android:id="@+id/btn_capture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Capture"
+            android:layout_marginTop="8dp"
+            />
+
         <!-- Show SDK version  -->
         <TextView
             android:id="@+id/sdk_version"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:layout_marginTop="8dp"
             android:text="@string/sdk_version_text"
             android:textColor="?attr/textColor"
             android:textSize="12sp" />

@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +53,7 @@ public class FlirCameraActivity extends AppCompatActivity {
 
     private ImageView msxImage;
     private ImageView photoImage;
+    private Button btn_capture;
     private static Menu menu;
 
     ScaleGestureDetector mScaleGestureDetector;
@@ -64,13 +66,19 @@ public class FlirCameraActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     private static FlirCameraActivity instance;
 
+    private ImageWriter imageWriter = null;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.flir_emulator_main);
         msxImage = findViewById(R.id.msx_image);
         photoImage = findViewById(R.id.photo_image);
+        btn_capture = findViewById(R.id.btn_capture);
         connectionStatus = findViewById(R.id.connection_status_text);
+
+        btn_capture.setOnClickListener(v -> onCaptureImage());
 
         width = 200;
         height = 200;
@@ -94,6 +102,10 @@ public class FlirCameraActivity extends AppCompatActivity {
                 connectCamera(cameraHandler.getFlirOneEmulator());
                 break;
         }
+    }
+
+    private void onCaptureImage() {
+        imageWriter = new ImageWriter(this);
     }
 
     @Override
@@ -438,6 +450,15 @@ public class FlirCameraActivity extends AppCompatActivity {
                 }
             });
 
+        }
+
+        @Override
+        public void images(FrameDataHolder images) {
+            if (imageWriter != null) {
+                imageWriter.saveImages(images);
+                imageWriter = null;
+                Toast.makeText(FlirCameraActivity.this, "Saved Image", Toast.LENGTH_SHORT).show();
+            }
         }
     };
 
