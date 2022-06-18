@@ -253,9 +253,6 @@ class CameraHandler {
             Canvas canvas = new Canvas(msxBitmap);
             Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-            // Draw Rectangles
-            drawGuideRectangle(canvas, paint, thermalImage, msxBitmap);
-            drawFaceRectangle(canvas, paint, thermalImage, dcBitmap, msxBitmap);
 
             Log.d(TAG, "adding images to cache");
             streamDataListener.images(msxBitmap, dcBitmap);

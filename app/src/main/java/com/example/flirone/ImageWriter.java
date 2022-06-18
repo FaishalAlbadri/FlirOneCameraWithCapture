@@ -5,10 +5,15 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+
+import org.opencv.android.Utils;
+import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,6 +23,11 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
+
+import static org.opencv.imgproc.Imgproc.ADAPTIVE_THRESH_MEAN_C;
+import static org.opencv.imgproc.Imgproc.THRESH_BINARY;
+import static org.opencv.imgproc.Imgproc.THRESH_BINARY_INV;
+import static org.opencv.imgproc.Imgproc.THRESH_OTSU;
 
 public class ImageWriter {
 
@@ -96,8 +106,30 @@ public class ImageWriter {
         @SuppressLint("SimpleDateFormat")
         String timeStamp = new SimpleDateFormat("yyy_MM_dd_HH_mm_ss_SSS").format(now);
 
-        writeImage(images.firBitmap, "fir_" + timeStamp + ".png", Long.toString(now.getTime()));
-        writeImage(images.rgbBitmap, "rgb_" + timeStamp + ".png", Long.toString(now.getTime()));
+        try {
+            writeImage(images.firBitmap, "fir_" + timeStamp + ".png", Long.toString(now.getTime()));
+            writeImage(images.rgbBitmap, "rgb_" + timeStamp + ".png", Long.toString(now.getTime()));
+            writeImage(edgesim(images.rgbBitmap), "blck_" + timeStamp + ".png", Long.toString(now.getTime()));
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static Bitmap edgesim(Bitmap originalimage) {
+
+        Bitmap image;
+
+        Mat img = new Mat();
+        Utils.bitmapToMat(originalimage, img);
+
+        Imgproc.cvtColor(img,img, Imgproc.COLOR_BGR2GRAY);
+        Imgproc.adaptiveThreshold(img, img, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 19, -0.10);
+
+        image= Bitmap.createBitmap(img.cols(), img.rows(), Bitmap.Config.ARGB_8888);
+
+        Utils.matToBitmap(img, image);
+
+        return image;
     }
 
 }

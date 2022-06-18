@@ -27,6 +27,7 @@ import com.flir.thermalsdk.live.Identity;
 import com.flir.thermalsdk.live.connectivity.ConnectionStatusListener;
 
 import org.jetbrains.annotations.NotNull;
+import org.opencv.android.OpenCVLoader;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -77,6 +78,8 @@ public class FlirCameraActivity extends AppCompatActivity {
         photoImage = findViewById(R.id.photo_image);
         btn_capture = findViewById(R.id.btn_capture);
         connectionStatus = findViewById(R.id.connection_status_text);
+
+        OpenCVLoader.initDebug();
 
         btn_capture.setOnClickListener(v -> onCaptureImage());
 
@@ -454,10 +457,14 @@ public class FlirCameraActivity extends AppCompatActivity {
 
         @Override
         public void images(FrameDataHolder images) {
-            if (imageWriter != null) {
-                imageWriter.saveImages(images);
-                imageWriter = null;
-                Toast.makeText(FlirCameraActivity.this, "Saved Image", Toast.LENGTH_SHORT).show();
+            try {
+                if (imageWriter != null) {
+                    imageWriter.saveImages(images);
+                    imageWriter = null;
+                    Toast.makeText(FlirCameraActivity.this, "Saved Image", Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     };

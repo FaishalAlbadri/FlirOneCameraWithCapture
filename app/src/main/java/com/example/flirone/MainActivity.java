@@ -19,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.opencv.android.OpenCVLoader;
+
 import static com.example.flirone.FlirCameraApplication.cameraHandler;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        OpenCVLoader.initDebug();
 
         // Initialize Thermal SDK
         ThermalSdkAndroid.init(getApplicationContext(), ThermalLog.LogLevel.WARNING);
